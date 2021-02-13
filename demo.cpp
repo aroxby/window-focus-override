@@ -10,6 +10,14 @@ LRESULT CALLBACK winProc(HWND hwnd, UINT type, WPARAM wparam, LPARAM lparam)
             PostQuitMessage(0);
             break;
 
+        case WM_ACTIVATE:
+            if(LOWORD(wparam)) {
+                SetWindowText(hwnd, "Active");
+            } else {
+                SetWindowText(hwnd, "Inactive");
+            }
+            break;
+
         default:
             return CallWindowProc(DefWindowProc, hwnd, type, wparam, lparam);
     }
@@ -50,8 +58,7 @@ int WindowMessageLoop(HWND hWnd)
 }
 
 int main(int argc, char *argv[]) {
-    HICON ico = ExtractIcon(0, "Shell32.dll", 2);
-    registerClass("exampleWindowCls", ico);
+    registerClass("exampleWindowCls");
 
     HWND win = CreateWindow(
         "exampleWindowCls",
@@ -59,29 +66,14 @@ int main(int argc, char *argv[]) {
         WS_SYSMENU|WS_VISIBLE,
         100,
         100,
-        500,
-        500,
+        100,
+        100,
         NULL,
         NULL,
         NULL,
         NULL
     );
     assert(win);
-
-    HWND txt = CreateWindow(
-        "STATIC",
-        "Example Window",
-        WS_CHILD|WS_VISIBLE,
-        5,
-        5,
-        483,
-        460,
-        win,
-        NULL,
-        NULL,
-        NULL
-    );
-    assert(txt);
 
     int exitCode = WindowMessageLoop(win);
     return exitCode;
